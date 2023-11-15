@@ -15,9 +15,11 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class BluetoothManagerHelper {
@@ -28,6 +30,7 @@ public class BluetoothManagerHelper {
     private BluetoothGatt bluetoothGatt;
     private BluetoothGattCharacteristic characteristic;
     private BluetoothGattCallback gattCallback;
+    private String[] targetDeviceName = {"Xcel BT Muff v2_BLE", "Digital BT Muff v2(BLE)"};
 
     public BluetoothManagerHelper(Context context) {
         this.context = context;
@@ -60,9 +63,9 @@ public class BluetoothManagerHelper {
             @Override
             public void onServicesDiscovered(BluetoothGatt gatt, int status) {
                 super.onServicesDiscovered(gatt, status);
-                BluetoothGattService service = gatt.getService(UUID.fromString("0000ffc0-0000-1000-8000-00805f9b34fb"));
+                BluetoothGattService service = gatt.getService(UUID.fromString(BluetoothGattAttributes.HEADSET_BASE_CONFIG_SERVICE));
                 if (service != null) {
-                    characteristic = service.getCharacteristic(UUID.fromString("0000ffc1-0000-1000-8000-00805f9b34fb"));
+                    characteristic = service.getCharacteristic(UUID.fromString(BluetoothGattAttributes.HEADSET_BASE_WRITE_CONFIG_CHARACTERISTIC));
                 }
             }
 
@@ -77,7 +80,7 @@ public class BluetoothManagerHelper {
         };
     }
 
-    public void startScanningForDevice(String deviceName) {
+    public void startScanningForDevice() {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -93,8 +96,8 @@ public class BluetoothManagerHelper {
             public void onScanResult(int callbackType, ScanResult result) {
                 super.onScanResult(callbackType, result);
                 BluetoothDevice device = result.getDevice();
-                if (device != null && device.getName() != null && device.getName().equals(deviceName)) {
-                    Log.d("EMN", "Device Found!" + deviceName);
+                if (device != null && device.getName() != null && Arrays.asList(targetDeviceName).contains(device.getName())) {
+                    Log.d("EMN", "Device Found!" + targetDeviceName);
                     stopScanning();
                     connectToDevice(device);
                 }

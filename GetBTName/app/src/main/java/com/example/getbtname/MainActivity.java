@@ -31,17 +31,10 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-  //  private ScanAndConnectBleDevice scanAndConnectBleDevice;
     private BluetoothManagerHelper bluetoothManagerHelper;
 
     byte[] clearVoice = {90, -69, 0, 26, 26, 26, 2, 101};
     byte[] universal = {90, -69, 0, 26, 26, 26, 1, 100};
-
-    private final String xcelDevice = "Xcel BT Muff v2_BLE";
-    private final String digitalBtDevice = "Digital BT Muff v2(BLE)";
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
        // scanAndConnectBleDevice.scanDevice(scanAndConnectBleDevice);
 
         bluetoothManagerHelper = new BluetoothManagerHelper(this);
-        bluetoothManagerHelper.startScanningForDevice(xcelDevice);
+        bluetoothManagerHelper.startScanningForDevice();
 
         Button clearVoiceBtn = findViewById(R.id.clear_voice);
         Button universalBtn = findViewById(R.id.universal);
