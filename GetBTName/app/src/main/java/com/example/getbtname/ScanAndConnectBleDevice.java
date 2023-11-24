@@ -9,8 +9,6 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 import java.util.Arrays;
@@ -25,6 +23,7 @@ public class ScanAndConnectBleDevice {
     private ScanCallback scanCallback;
     private String[] targetDeviceNames = {"Xcel BT Muff v2_BLE", "Digital BT Muff v2(BLE)"};
     private String targetDevice;
+    BluetoothDevice myDevice;
 
 
     public ScanAndConnectBleDevice(Context context) {
@@ -61,7 +60,7 @@ public class ScanAndConnectBleDevice {
 
     }
 
-    public void scanDevice(ScanAndConnectBleDevice scanAndConnectBleDevice){
+    public BluetoothDevice scanDevice(ScanAndConnectBleDevice scanAndConnectBleDevice){
 
         ScanCallback scanCallback = new ScanCallback() {
             @Override
@@ -70,10 +69,11 @@ public class ScanAndConnectBleDevice {
                 Log.d(TAG, "Devices " + device.getName());
                 if (device.getName() != null && Arrays.asList(targetDeviceNames).contains(device.getName())) {
                     targetDevice = device.getName();
+                    myDevice = device;
                     Log.d(TAG, "Device Found!!! " + targetDevice);
                     // Hedef cihaz bulundu, işlemlerinizi burada gerçekleştirin
                     scanAndConnectBleDevice.stopScanning();
-                    scanAndConnectBleDevice.connectToGattServer(device);
+                 //   scanAndConnectBleDevice.connectToGattServer(device);
                 }else{
                     Log.d(TAG, "Device Not Found!!!");
                 }
@@ -81,6 +81,7 @@ public class ScanAndConnectBleDevice {
         };
 
         scanAndConnectBleDevice.startScanningForDevice(targetDevice, scanCallback);
+        return myDevice;
 
     }
 }
